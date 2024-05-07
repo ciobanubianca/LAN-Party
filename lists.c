@@ -5,7 +5,7 @@
 
 #define chr 30
 
-void addAtBeginning(team **head, int nr_players, char *team_name, player *players, int totalPoints)
+void addAtBeginning(team **head, int nr_players, char *team_name, player *players, float totalPoints)
 {
 	team *newTeam = (team *)malloc(sizeof(team));
 	if (newTeam == NULL)
@@ -55,10 +55,9 @@ void addAtBeginning(team **head, int nr_players, char *team_name, player *player
 
 	newTeam->next = *head;
 	*head = newTeam;
+}
 
-}	
-
-void addAtEnd(team **head, int nr_players, char *team_name, player *players, int totalPoints)
+void addAtEnd(team **head, int nr_players, char *team_name, player *players, float totalPoints)
 {
 	team *aux = *head;
 
