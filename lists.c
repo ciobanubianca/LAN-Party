@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "header.h"
 
-#define chr 30
+#define characters 50
 
 void addAtBeginning(team **head, int nr_players, char *team_name, player *players, float totalPoints)
 {
@@ -132,3 +133,4 @@ void printTeamName(team *head)
 		current = current->next;
 	}
 }
+

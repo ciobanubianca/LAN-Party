@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "header.h"
 
-#define chr 30
+#define characters 50
 
 void readTasks(char *file, int *tasks, int numOfTasks)
 {
@@ -21,6 +22,8 @@ void readTasks(char *file, int *tasks, int numOfTasks)
 
     fclose(f1);
 }
+
+//=== TASK 1 ===========================================================
 
 team *readTeams(char *file1, int *nrTeams)
 {
@@ -59,7 +62,7 @@ team *readTeams(char *file1, int *nrTeams)
     {
         fscanf(f1, "%d", &nr_players);
 
-        team_name = (char *)malloc(chr * sizeof(char));
+        team_name = (char *)malloc(characters * sizeof(char));
         if (team_name == NULL)
         {
             printf("Failed to alocate memory\n");
@@ -68,7 +71,7 @@ team *readTeams(char *file1, int *nrTeams)
 
         fscanf(f1, "%c", &space); // citeste spatiul dintre nr de jucatori si numele echipei
 
-        fgets(team_name, chr, f1);
+        fgets(team_name, characters, f1);
 
         if (team_name[strlen(team_name) - 1] == '\n') // elimina newline-ul
         {
@@ -84,14 +87,14 @@ team *readTeams(char *file1, int *nrTeams)
 
         for (int j = 0; j < nr_players; j++)
         {
-            players[j].firstName = (char *)malloc(chr * sizeof(char));
+            players[j].firstName = (char *)malloc(characters * sizeof(char));
             if (players[j].firstName == NULL)
             {
                 printf("Failed to alocate memory\n");
                 return NULL;
             }
 
-            players[j].secondName = (char *)malloc(chr * sizeof(char));
+            players[j].secondName = (char *)malloc(characters * sizeof(char));
             if (players[j].secondName == NULL)
             {
                 printf("Failed to alocate memory\n");

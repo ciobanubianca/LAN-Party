@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
+#define characters 50
 
 typedef struct player
 {
@@ -38,7 +40,5 @@ void printTeamName(team *head);
 team *readTeams(char *file1, int *nrTeams);
 
 void task1(char *file, team *teamList, int nrTeams);
-
-//=====================================================================================================
 
 #endif

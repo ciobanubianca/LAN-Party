@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "header.h"
+#define characters 50
 
 #define numOfTasks 5
 
