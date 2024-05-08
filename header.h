@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#define characters 50
+#define characters 60
 
 typedef struct player
 {
@@ -40,5 +40,22 @@ void printTeamName(team *head);
 team *readTeams(char *file1, int *nrTeams);
 
 void task1(char *file, team *teamList, int nrTeams);
+
+
+//=== TASK 2 ==========================================================================================
+
+float averageScore(team *teamlist);
+
+float *averagescoresV(team *teamList, int *nrTeams);
+
+float lowestScore(float *v, int *nrTeams);
+
+int EliminatedTeams(int *nrTeams);
+
+void deleteTeamAverg(team **teamlist, float medie);
+
+float *deleteMin(float *v, int *nrTeams, float min);
+
+void task2(char *file, team **teamList, int *nrTeams);
 
 #endif

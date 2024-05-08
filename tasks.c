@@ -4,7 +4,7 @@
 #include <math.h>
 #include "header.h"
 
-#define characters 50
+#define characters 60
 
 void readTasks(char *file, int *tasks, int numOfTasks)
 {
@@ -107,7 +107,12 @@ team *readTeams(char *file1, int *nrTeams)
         }
 
         addAtBeginning(&(TeamList[0]), nr_players, team_name, players, totalPoints);
+
+        if (i < (*nrTeams) - 1)
+        {
         fscanf(f1, "\n"); // ignora linia dintre echipe in fisier
+        }
+
         totalPoints = 0.0;
     }
 
@@ -134,6 +139,115 @@ void task1(char *file, team *teamList, int nrTeams)
         current = current->next;
         i++;
     }
+
+    fclose(f1);
+}
+
+
+//=== TASK 2 ===========================================================
+
+float averageScore(team *teamlist) // media punctajelor pentru o echipa
+{
+    float average = 0.0;
+
+    for (int i = 0; i < teamlist->nrPlayers; i++)
+    {
+        average += teamlist->players[i].points;
+    }
+    return (float)(average / teamlist->nrPlayers);
+}
+
+float *averagescoresV(team *teamList, int *nrTeams) // vector cu mediile echipelor
+{
+    float *v = (float *)malloc(*nrTeams * sizeof(float));
+    if (v == NULL)
+    {
+        printf("Failed to alocate memory\n");
+        return NULL;
+    }
+
+    for (int i = 0; i < *nrTeams; i++)
+    {
+        v[i] = averageScore(teamList);
+        teamList = teamList->next;
+    }
+
+    return v;
+}
+
+float lowestScore(float *v, int *nrTeams)
+{
+    float min = v[0];
+
+    for (int i = 1; i < *nrTeams; i++)
+    {
+        if (v[i] <= min)
+        {
+            min = v[i];
+        }
+    }
+    return min;
+}
+
+float *deleteMin(float *v, int *nrTeams, float min)
+{
+    int index = 0;
+    for (int i = 0; i < (*nrTeams); i++)
+    {
+        if (v[i] == min)
+        {
+            index = i;
+            for (int j = index; j < (*nrTeams - 1); j++)
+            {
+                v[j] = v[j + 1];
+            }
+            break ;
+        }
+    }
+    return v;
+}
+
+// nr de echipe pe care le eliminam pana la nr max de echipe ca putere a lui 2
+int EliminatedTeams(int *nrTeams)
+{
+    int power = (int)log2(*nrTeams);
+    int powerOfTwo = pow(2, power);
+    return (*nrTeams - powerOfTwo);
+}
+
+void task2(char *file, team **teamList, int *nrTeams)
+{
+    FILE *f1 = fopen(file, "wt");
+    if (f1 == NULL)
+    {
+        printf("The file cannot be opened!\n");
+        return ;
+    }
+
+    float *v = averagescoresV(*teamList, nrTeams);
+
+    int numOfEliminatedTeams = EliminatedTeams(nrTeams);
+
+    float min = 0.0 ;
+    //stergem un nr de echipe egal cu diferenta dintre nr total de echipe si nr max de echipe care poate fi scris ca o putere a lui 2
+    for (int k = 0; k < numOfEliminatedTeams; k++) 
+    {
+        min = lowestScore(v, nrTeams);        
+        deleteTeamAverg(teamList, min) ;
+        v = deleteMin(v, nrTeams, min); //stergem si minimul din vector
+        (*nrTeams)--;
+    }
+
+    team *current = *teamList;
+
+    int i = 0 ;
+    while (i < *nrTeams)
+    {
+        fprintf(f1, "%s\n", current->teamName);
+        current = current->next;
+        i++;
+    }
+    free(v) ;
 
     fclose(f1);
 }

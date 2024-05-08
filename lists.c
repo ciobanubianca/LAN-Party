@@ -4,7 +4,7 @@
 #include <math.h>
 #include "header.h"
 
-#define characters 50
+#define characters 60
 
 void addAtBeginning(team **head, int nr_players, char *team_name, player *players, float totalPoints)
 {
@@ -134,3 +134,37 @@ void printTeamName(team *head)
 	}
 }
 
+
+//sterge o echipa in functie de media punctajelor
+void deleteTeamAverg(team **teamlist, float medie)
+{
+	if (*teamlist == NULL)
+	{
+		return;
+	}
+
+	team *aux = *teamlist;
+
+	if ((averageScore(aux)) == medie)
+	{
+		*teamlist = (*teamlist)->next;
+		free(aux);
+		return;
+	}
+
+	team *prev = *teamlist;
+	while (aux != NULL)
+	{
+		if ((averageScore(aux)) != medie)
+		{
+			prev = aux;
+			aux = aux->next;
+		}
+		else
+		{
+			prev->next = aux->next;
+			free(aux);
+			return;
+		}
+	}
+}
