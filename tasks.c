@@ -6,6 +6,12 @@
 
 #define characters 60
 
+FILE *OpenWriteFile(char *file)
+{
+    FILE *f1 = fopen(file, "wt");
+    return f1;
+}
+
 void readTasks(char *file, int *tasks, int numOfTasks)
 {
     FILE *f1 = fopen(file, "rt");
@@ -44,7 +50,7 @@ team *readTeams(char *file1, int *nrTeams)
     team **TeamList = (team **)malloc((*nrTeams) * sizeof(team *));
     if (TeamList == NULL)
     {
-        printf("Failed to alocate memory\n");
+        printf("Failed to allocate memory\n");
         return NULL;
     }
 
@@ -53,7 +59,7 @@ team *readTeams(char *file1, int *nrTeams)
         TeamList[i] = (team *)malloc(sizeof(team));
         if (TeamList[i] == NULL)
         {
-            printf("Failed to alocate memory\n");
+            printf("Failed to allocate memory\n");
             return NULL;
         }
     }
@@ -65,7 +71,7 @@ team *readTeams(char *file1, int *nrTeams)
         team_name = (char *)malloc(characters * sizeof(char));
         if (team_name == NULL)
         {
-            printf("Failed to alocate memory\n");
+            printf("Failed to allocate memory\n");
             return NULL;
         }
 
@@ -81,7 +87,7 @@ team *readTeams(char *file1, int *nrTeams)
         players = (player *)malloc(nr_players * sizeof(player));
         if (players == NULL)
         {
-            printf("Failed to alocate memory\n");
+            printf("Failed to allocate memory\n");
             return NULL;
         }
 
@@ -90,14 +96,14 @@ team *readTeams(char *file1, int *nrTeams)
             players[j].firstName = (char *)malloc(characters * sizeof(char));
             if (players[j].firstName == NULL)
             {
-                printf("Failed to alocate memory\n");
+                printf("Failed to allocate memory\n");
                 return NULL;
             }
 
             players[j].secondName = (char *)malloc(characters * sizeof(char));
             if (players[j].secondName == NULL)
             {
-                printf("Failed to alocate memory\n");
+                printf("Failed to allocate memory\n");
                 return NULL;
             }
 
@@ -110,7 +116,7 @@ team *readTeams(char *file1, int *nrTeams)
 
         if (i < (*nrTeams) - 1)
         {
-        fscanf(f1, "\n"); // ignora linia dintre echipe in fisier
+            fscanf(f1, "\n"); // ignora linia dintre echipe in fisier
         }
 
         totalPoints = 0.0;
@@ -123,7 +129,7 @@ team *readTeams(char *file1, int *nrTeams)
 
 void task1(char *file, team *teamList, int nrTeams)
 {
-    FILE *f1 = fopen(file, "wt");
+    FILE *f1 = OpenWriteFile(file);
     if (f1 == NULL)
     {
         printf("The file cannot be opened!\n");
@@ -143,7 +149,6 @@ void task1(char *file, team *teamList, int nrTeams)
     fclose(f1);
 }
 
-
 //=== TASK 2 ===========================================================
 
 float averageScore(team *teamlist) // media punctajelor pentru o echipa
@@ -162,7 +167,7 @@ float *averagescoresV(team *teamList, int *nrTeams) // vector cu mediile echipel
     float *v = (float *)malloc(*nrTeams * sizeof(float));
     if (v == NULL)
     {
-        printf("Failed to alocate memory\n");
+        printf("Failed to allocate memory\n");
         return NULL;
     }
 
@@ -201,7 +206,7 @@ float *deleteMin(float *v, int *nrTeams, float min)
             {
                 v[j] = v[j + 1];
             }
-            break ;
+            break;
         }
     }
     return v;
@@ -217,37 +222,100 @@ int EliminatedTeams(int *nrTeams)
 
 void task2(char *file, team **teamList, int *nrTeams)
 {
-    FILE *f1 = fopen(file, "wt");
+    FILE *f1 = OpenWriteFile(file);
     if (f1 == NULL)
     {
         printf("The file cannot be opened!\n");
-        return ;
+        return;
     }
 
     float *v = averagescoresV(*teamList, nrTeams);
 
     int numOfEliminatedTeams = EliminatedTeams(nrTeams);
 
-    float min = 0.0 ;
-    //stergem un nr de echipe egal cu diferenta dintre nr total de echipe si nr max de echipe care poate fi scris ca o putere a lui 2
-    for (int k = 0; k < numOfEliminatedTeams; k++) 
+    float min = 0.0;
+    // stergem un nr de echipe egal cu diferenta dintre nr total de echipe si nr max de echipe care poate fi scris ca o putere a lui 2
+    for (int k = 0; k < numOfEliminatedTeams; k++)
     {
-        min = lowestScore(v, nrTeams);        
-        deleteTeamAverg(teamList, min) ;
-        v = deleteMin(v, nrTeams, min); //stergem si minimul din vector
+        min = lowestScore(v, nrTeams);
+        deleteTeamAverg(teamList, min);
+        v = deleteMin(v, nrTeams, min); // stergem si minimul din vector
         (*nrTeams)--;
     }
 
     team *current = *teamList;
 
-    int i = 0 ;
+    int i = 0;
     while (i < *nrTeams)
     {
         fprintf(f1, "%s\n", current->teamName);
         current = current->next;
         i++;
     }
-    free(v) ;
+    free(v);
 
     fclose(f1);
+}
+//=== TASK 3 =====================================================================
+
+void task3(char *file, team **teamList, int *nrTeams)
+{
+    FILE *f1 = OpenWriteFile(file);
+    if (f1 == NULL)
+    {
+        printf("The file cannot be opened!\n");
+        return;
+    }
+
+    int round = 1;
+    Queue *q = createQueue();
+
+    team *current = *teamList;
+    for (int i = 0; i < *nrTeams; i++)
+    {
+        enQueue(q, current->nrPlayers, current->teamName, current->players, current->totalPoints);
+        current = current->next;
+    }
+    current = q->front;
+    while (current != NULL)
+    {
+        fprintf(f1, "%s\n", current->teamName);
+        current = current->next;
+    }
+
+    fprintf(f1, "\n--- ROUND NO:%d\n", round);
+
+    matches(file, q);
+
+    // printTeamNameQueue(q); -> de test
+    fclose(f1);
+}
+
+void matches(char *file, Queue *q)
+{
+    if (isEmpty(q))
+    {
+        return;
+    }
+    FILE *f1 = fopen(file, "at") ;
+    if (f1 == NULL)
+    {
+        printf("The file cannot be opened!\n");
+        return;
+    }
+
+   team *firstTeam, *secondTeam;
+
+    while (isEmpty(q) != 1)
+    {
+        firstTeam = deQueue(q);
+        secondTeam = deQueue(q);
+        if (firstTeam->teamName[strlen(firstTeam->teamName) - 1] == '\n')
+        {
+            firstTeam->teamName[strlen(firstTeam->teamName) - 1] = '\0';
+        }
+        fprintf(f1, "%-33s-%33s\n", firstTeam->teamName, secondTeam->teamName);
+    } 
+
+    
 }

@@ -14,6 +14,7 @@ typedef struct player
     int points;
 } player;
 
+
 typedef struct team
 {
     int nrPlayers;
@@ -25,7 +26,14 @@ typedef struct team
 
 } team;
 
-void readTasks(char *file, int *tasks, int numOfTasks);
+
+typedef struct queue
+{
+    team *front , *rear ;
+}Queue ;
+
+
+FILE *OpenWriteFile(char *file);
 
 //=== LIST ==========================================================================================
 
@@ -35,7 +43,33 @@ void addAtEnd(team **head, int nr_players, char *team_name, player *players, flo
 
 void printTeamName(team *head);
 
+
+//=== QUEUE =========================================================================================
+
+Queue *createQueue();
+
+void enQueue(Queue *q, int nr_players, char *team_name, player *players, float totalPoints);
+
+int isEmpty(Queue *q);
+
+team *deQueue(Queue *q);
+
+void printTeamNameQueue(Queue *q);
+
+//!***!!!!!
+//=== STACK =========================================================================================
+
+void push(team **top, team *aux);
+
+int pop(team **top);
+
+int isEmptyStack(team *top);
+
+int top(team *top);
+
 //=== TASK 1 =========================================================================================
+
+void readTasks(char *file, int *tasks, int numOfTasks);
 
 team *readTeams(char *file1, int *nrTeams);
 
@@ -57,5 +91,17 @@ void deleteTeamAverg(team **teamlist, float medie);
 float *deleteMin(float *v, int *nrTeams, float min);
 
 void task2(char *file, team **teamList, int *nrTeams);
+
+
+//=== TASK 3 ============================================================================================
+
+void task3(char *file, team **teamList, int *nrTeams);
+
+void matches(char *file, Queue *q);
+
+
+//=== TASK 4 ============================================================================================
+
+
 
 #endif

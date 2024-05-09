@@ -25,5 +25,20 @@ int main(int argc, char *argv[])
         task2(argv[3], &teamList, &nrTeams);
     }
 
+    if (tasks[2] == 1)
+    {
+        task3(argv[3], &teamList, &nrTeams);
+    }
+
+    /*if (tasks[3] == 1)
+    {
+        task4(argv[3], &teamList, &nrTeams);
+    }
+
+    if (tasks[4] == 1)
+    {
+        task5(argv[3], &teamList, &nrTeams);
+    } */
+
     return 0;
 }
