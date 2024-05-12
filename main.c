@@ -13,6 +13,7 @@ int main(int argc, char *argv[])
     readTasks(argv[1], tasks, numOfTasks);
 
     int nrTeams = 0;
+    team *lastEight = NULL;
     team *teamList = readTeams(argv[2], &nrTeams);
 
     if (tasks[0] == 1)
@@ -27,15 +28,15 @@ int main(int argc, char *argv[])
 
     if (tasks[2] == 1)
     {
-        task3(argv[3], &teamList, &nrTeams);
+        task3(argv[3], &teamList, &lastEight, &nrTeams);
     }
 
-    /*if (tasks[3] == 1)
+    if (tasks[3] == 1)
     {
-        task4(argv[3], &teamList, &nrTeams);
+        task4(argv[3], lastEight);
     }
 
-    if (tasks[4] == 1)
+    /*if (tasks[4] == 1)
     {
         task5(argv[3], &teamList, &nrTeams);
     } */

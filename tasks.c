@@ -3,7 +3,6 @@
 #include <string.h>
 #include <math.h>
 #include <ctype.h>
-#include <stdbool.h>
 #include "header.h"
 
 #define characters 60
@@ -369,9 +368,10 @@ void matches(char *file, Queue *q, team **winnersStack, team **losersStack, team
         (*round)++;
         (*nrTeams) = (*nrTeams) / 2;
     }
+    fclose(f1);
 }
 
-void task3(char *file, team **teamList, int *nrTeams)
+void task3(char *file, team **teamList, team **lastEight, int *nrTeams)
 {
     FILE *f1 = fopen(file, "at");
     if (f1 == NULL)
@@ -392,9 +392,33 @@ void task3(char *file, team **teamList, int *nrTeams)
 
     team *winnersStack = NULL;
     team *losersStack = NULL;
-    team *lastEight = NULL;
 
-    matches(file, q, &winnersStack, &losersStack, &lastEight, &round, nrTeams);
+    matches(file, q, &winnersStack, &losersStack, lastEight, &round, nrTeams);
+
+    fclose(f1);
+}
+
+//=== TASK 4 =====================================================================
+
+void task4(char *file, team *lastEight)
+{
+    FILE *f1 = fopen(file, "at");
+    if(f1 == NULL)
+    {
+        printf("The file cannot be opened!\n");
+        return;
+    }
+    
+    node *root = NULL;
+    team *current = lastEight;
+    fprintf(f1, "\nTOP 8 TEAMS:\n");
+    while(current != NULL)
+    {  
+        root = insert(root, current);
+        current = current->next;
+    }
+    
+    printBST(root, f1);
 
     fclose(f1);
 }

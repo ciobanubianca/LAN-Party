@@ -31,6 +31,12 @@ typedef struct queue
     team *front, *rear;
 } Queue;
 
+typedef struct node
+{
+    team val;
+    struct node *left, *right;
+}node ;
+
 FILE *OpenWriteFile(char *file);
 
 //=== LIST ==========================================================================================
@@ -69,6 +75,16 @@ void freeStack(team **stack);
 
 int nrOfWinners(team *stack);
 
+//=== BST ============================================================================================
+
+node *newNode(int nr_players, char *team_name, player *players, float totalPoints);
+
+node *insert(node *node, team *key);
+
+void printBST(node *root, FILE *f1);
+
+void preorder(node *root);
+
 //=== TASK 1 =========================================================================================
 
 void readTasks(char *file, int *tasks, int numOfTasks);
@@ -97,12 +113,15 @@ void task2(char *file, team **teamList, int *nrTeams);
 
 void trim(char *str);
 
-void task3(char *file, team **teamList, int *nrTeams);
+void task3(char *file, team **teamList, team **lastEight, int *nrTeams);
 
 void matches(char *file, Queue *q, team **winnersStack, team **losersStack, team **lastEight, int *round, int *nrTeams);
 
 float averageScore2(team *teamlist);
 
 //=== TASK 4 ============================================================================================
+
+void task4(char *file, team *lastEight);
+
 
 #endif
