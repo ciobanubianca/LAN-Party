@@ -6,16 +6,16 @@
 
 void push(team **top, team *aux)
 {
-    team *newTeam = (team *)malloc(sizeof(team));
-    if (newTeam == NULL)
-    {
-        printf("Failed to allocate memory!\n");
-        return;
-    }
+	team *newTeam = (team *)malloc(sizeof(team));
+	if (newTeam == NULL)
+	{
+		printf("Failed to allocate memory!\n");
+		return;
+	}
 
-    newTeam->nrPlayers = aux->nrPlayers ;
-    
-    newTeam->teamName = (char *)malloc((strlen(aux->teamName) + 1) * sizeof(char));
+	newTeam->nrPlayers = aux->nrPlayers;
+
+	newTeam->teamName = (char *)malloc((strlen(aux->teamName) + 1) * sizeof(char));
 	if (newTeam->teamName == NULL)
 	{
 		printf("Failed to alocate memory\n");
@@ -52,39 +52,128 @@ void push(team **top, team *aux)
 	}
 	newTeam->totalPoints = aux->totalPoints;
 
-    newTeam->next = *top;
-   *top = newTeam; 
+	newTeam->next = *top;
+	*top = newTeam;
 }
 
-
-int pop(team **top)
+team *pop(team **top)
 {
-    if(isEmptyStack(*top))
-    {
-        return INT_MIN ;
-    }
+	if (isEmptyStack(*top))
+	{
+		return NULL;
+	}
 
-    team *temp = (*top);
+	team *temp = (*top);
 
-    int aux = temp->nrPlayers ;
-    *top = (*top)->next;
-    free(temp);
+	team *aux = (team *)malloc(sizeof(team));
+	if (aux == NULL)
+	{
+		printf("Failed to allocate memory!\n");
+		return NULL;
+	}
+	aux->nrPlayers = temp->nrPlayers;
 
-    return aux ;
+	aux->teamName = (char *)malloc((strlen(temp->teamName) + 1) * sizeof(char));
+	if (aux->teamName == NULL)
+	{
+		printf("Failed to alocate memory\n");
+		return NULL;
+	}
+	strcpy(aux->teamName, temp->teamName);
+
+	aux->players = (player *)malloc(temp->nrPlayers * sizeof(player));
+	if (aux->players == NULL)
+	{
+		printf("Failed to alocate memory\n");
+		return NULL;
+	}
+
+	for (int i = 0; i < aux->nrPlayers; i++)
+	{
+		aux->players[i].firstName = (char *)malloc((strlen(temp->players[i].firstName) + 1) * sizeof(char));
+		if (aux->players[i].firstName == NULL)
+		{
+			printf("Failed to alocate memory\n");
+			return NULL;
+		}
+		strcpy(aux->players[i].firstName, temp->players[i].firstName);
+
+		aux->players[i].secondName = (char *)malloc((strlen(temp->players[i].secondName) + 1) * sizeof(char));
+		if (aux->players[i].secondName == NULL)
+		{
+			printf("Failed to alocate memory\n");
+			return NULL;
+		}
+		strcpy(aux->players[i].secondName, temp->players[i].secondName);
+
+		aux->players[i].points = temp->players[i].points;
+	}
+	aux->totalPoints = temp->totalPoints;
+
+	*top = (*top)->next;
+	free(temp);
+
+	return aux;
 }
-
 
 int isEmptyStack(team *top)
 {
-    return (top == NULL);
+	return (top == NULL);
 }
 
-
-int top(team *top)
+void printStack(char *file, team *stack)
 {
-    if(isEmptyStack(top))
-    {
-        return INT_MIN;
-    }
-    return top->nrPlayers;
+	FILE *f1 = fopen(file, "at");
+	if (f1 == NULL)
+	{
+		printf("The file cannot be opened!\n");
+		return;
+	}
+	if (isEmptyStack(stack))
+	{
+		return;
+	}
+	team *current = stack;
+	while (current != NULL)
+	{
+		printf("%s-%.2f\n", current->teamName, averageScore(current));
+		current = current->next;
+	}
+}
+
+int OneElem(team *top)
+{
+	if (isEmptyStack(top))
+	{
+		return 0;
+	}
+
+	if (top != NULL && top->next == NULL)
+	{
+		return 1;
+	}
+
+	return 0;
+}
+
+void freeStack(team **stack)
+{
+	while (*stack != NULL)
+	{
+		team *temp = *stack;
+		*stack = (*stack)->next;
+		free(temp);
+	}
+}
+
+int nrOfWinners(team *stack)
+{
+	int nr = 0;
+	team *current = stack;
+	while (current != NULL)
+	{
+		nr++;
+		current = current->next;
+	}
+	return nr;
 }

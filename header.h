@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <ctype.h>
 #define characters 60
 
 typedef struct player
@@ -13,7 +14,6 @@ typedef struct player
     char *secondName;
     int points;
 } player;
-
 
 typedef struct team
 {
@@ -26,12 +26,10 @@ typedef struct team
 
 } team;
 
-
 typedef struct queue
 {
-    team *front , *rear ;
-}Queue ;
-
+    team *front, *rear;
+} Queue;
 
 FILE *OpenWriteFile(char *file);
 
@@ -42,7 +40,6 @@ void addAtBeginning(team **head, int nr_players, char *team_name, player *player
 void addAtEnd(team **head, int nr_players, char *team_name, player *players, float totalPoints);
 
 void printTeamName(team *head);
-
 
 //=== QUEUE =========================================================================================
 
@@ -56,16 +53,21 @@ team *deQueue(Queue *q);
 
 void printTeamNameQueue(Queue *q);
 
-//!***!!!!!
 //=== STACK =========================================================================================
 
 void push(team **top, team *aux);
 
-int pop(team **top);
+team *pop(team **top);
 
 int isEmptyStack(team *top);
 
-int top(team *top);
+void printStack(char *file, team *stack);
+
+int OneElem(team *top);
+
+void freeStack(team **stack);
+
+int nrOfWinners(team *stack);
 
 //=== TASK 1 =========================================================================================
 
@@ -74,7 +76,6 @@ void readTasks(char *file, int *tasks, int numOfTasks);
 team *readTeams(char *file1, int *nrTeams);
 
 void task1(char *file, team *teamList, int nrTeams);
-
 
 //=== TASK 2 ==========================================================================================
 
@@ -92,16 +93,16 @@ float *deleteMin(float *v, int *nrTeams, float min);
 
 void task2(char *file, team **teamList, int *nrTeams);
 
-
 //=== TASK 3 ============================================================================================
+
+void trim(char *str);
 
 void task3(char *file, team **teamList, int *nrTeams);
 
-void matches(char *file, Queue *q);
+void matches(char *file, Queue *q, team **winnersStack, team **losersStack, team **lastEight, int *round, int *nrTeams);
 
+float averageScore2(team *teamlist);
 
 //=== TASK 4 ============================================================================================
-
-
 
 #endif

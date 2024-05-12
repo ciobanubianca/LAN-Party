@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
+#include <ctype.h>
 #include "header.h"
 
 Queue *createQueue()
@@ -96,48 +97,55 @@ team *deQueue(Queue *q)
     {
         return NULL;
     }
-    
-    Team->nrPlayers = aux->nrPlayers ;
 
-    Team->teamName = (char *)malloc((strlen(aux->teamName)+1) * sizeof(char)) ;
-    if(Team->teamName == NULL)
+    Team->nrPlayers = aux->nrPlayers;
+
+    Team->teamName = (char *)malloc((strlen(aux->teamName) + 1) * sizeof(char));
+    if (Team->teamName == NULL)
     {
-        return NULL ;
+        return NULL;
     }
-    strcpy(Team->teamName, aux->teamName) ;
+    strcpy(Team->teamName, aux->teamName);
 
     Team->players = (player *)malloc(Team->nrPlayers * sizeof(player));
-	if (Team->players == NULL)
-	{
-		printf("Failed to alocate memory\n");
-		return NULL;
-	}
+    if (Team->players == NULL)
+    {
+        printf("Failed to alocate memory\n");
+        return NULL;
+    }
 
-	for (int i = 0; i < Team->nrPlayers; i++)
-	{
-		Team->players[i].firstName = (char *)malloc((strlen(aux->players[i].firstName) + 1) * sizeof(char));
-		if (Team->players[i].firstName == NULL)
-		{
-			printf("Failed to alocate memory\n");
-			return NULL;
-		}
-		strcpy(Team->players[i].firstName, aux->players[i].firstName);
+    for (int i = 0; i < Team->nrPlayers; i++)
+    {
+        Team->players[i].firstName = (char *)malloc((strlen(aux->players[i].firstName) + 1) * sizeof(char));
+        if (Team->players[i].firstName == NULL)
+        {
+            printf("Failed to alocate memory\n");
+            return NULL;
+        }
+        strcpy(Team->players[i].firstName, aux->players[i].firstName);
 
-		Team->players[i].secondName = (char *)malloc((strlen(aux->players[i].secondName) + 1) * sizeof(char));
-		if (Team->players[i].secondName == NULL)
-		{
-			printf("Failed to alocate memory\n");
-			return NULL;
-		}
-		strcpy(Team->players[i].secondName, aux->players[i].secondName);
+        Team->players[i].secondName = (char *)malloc((strlen(aux->players[i].secondName) + 1) * sizeof(char));
+        if (Team->players[i].secondName == NULL)
+        {
+            printf("Failed to alocate memory\n");
+            return NULL;
+        }
+        strcpy(Team->players[i].secondName, aux->players[i].secondName);
 
-		Team->players[i].points = aux->players[i].points;
-	}
+        Team->players[i].points = aux->players[i].points;
+    }
     Team->totalPoints = aux->totalPoints;
 
-    q->front = (q->front)->next ;
-    //free(aux) ;
-    return Team ;
+    q->front = (q->front)->next;
+    free(aux->teamName); // Dealoc memory allocated for aux's teamName
+    for (int i = 0; i < aux->nrPlayers; i++)
+    {
+        free(aux->players[i].firstName);
+        free(aux->players[i].secondName);
+    }
+    free(aux->players);
+    free(aux);
+    return Team;
 }
 
 void printTeamNameQueue(Queue *q)
@@ -147,7 +155,7 @@ void printTeamNameQueue(Queue *q)
         return;
     }
     team *current = q->front;
-    
+
     while (current != NULL)
     {
         printf("%s\n", current->teamName);

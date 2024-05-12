@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <ctype.h>
+#include <stdbool.h>
 #include "header.h"
 
 #define characters 60
@@ -162,6 +164,13 @@ float averageScore(team *teamlist) // media punctajelor pentru o echipa
     return (float)(average / teamlist->nrPlayers);
 }
 
+float averageScore2(team *teamlist)
+{
+    float average = (float)(teamlist->totalPoints / teamlist->nrPlayers);
+
+    return (float)(average);
+}
+
 float *averagescoresV(team *teamList, int *nrTeams) // vector cu mediile echipelor
 {
     float *v = (float *)malloc(*nrTeams * sizeof(float));
@@ -258,9 +267,113 @@ void task2(char *file, team **teamList, int *nrTeams)
 }
 //=== TASK 3 =====================================================================
 
+void trim(char *str) //elimina space uri, tab uri, newline uri
+{
+    int i = strlen(str) - 1;
+    while (i >= 0 && isspace(str[i]))
+    {
+        str[i] = '\0';
+        i--;
+    }
+}
+
+void matches(char *file, Queue *q, team **winnersStack, team **losersStack, team **lastEight, int *round, int *nrTeams)
+{
+    FILE *f1 = fopen(file, "at");
+    if (f1 == NULL)
+    {
+        printf("The file cannot be opened!\n");
+        return;
+    }
+
+    team *firstTeam, *secondTeam;
+    // transform totalul de puncte al fiecarei echipe in media aritmetica a punctajelor
+    team *average = q->front;
+    while (average != NULL)
+    {
+        average->totalPoints = averageScore2(average);
+        average = average->next;
+    }
+
+    float p = 0.0;
+
+    if (isEmpty(q))
+    {
+        return;
+    }
+
+    while (*nrTeams > 1)
+    {
+        fprintf(f1, "\n--- ROUND NO:%d\n", *round);
+
+        while (isEmpty(q) != 1)
+        {
+            firstTeam = deQueue(q);
+            secondTeam = deQueue(q);
+            trim(firstTeam->teamName);
+            trim(secondTeam->teamName);
+
+            // aliniaza primul string la stanga si completeaza in dreapta lui cu spatii pana la al 33 lea caracter,
+            // la fel si pt al doilea string, il aliniaza la dreapta si completeaza la stanga restul pana la 33, cu spatii
+            fprintf(f1, "%-33s-%33s\n", firstTeam->teamName, secondTeam->teamName);
+
+            if (averageScore2(firstTeam) > averageScore2(secondTeam))
+            {
+                /*p = (float)(1.0 / firstTeam->nrPlayers); //adaugam la punctajul fiecarui jucator 1 / nr jucatori (1p pe echipa)
+                for (int i = 0; i < firstTeam->nrPlayers; i++)
+                {
+                    firstTeam->players[i].points  += p;
+                }*/
+                firstTeam->totalPoints += 1.0;
+                push(winnersStack, firstTeam);
+                push(losersStack, secondTeam);
+            }
+            else
+            {
+                secondTeam->totalPoints += 1.0;
+                push(winnersStack, secondTeam);
+                push(losersStack, firstTeam);
+            }
+        }
+        team *current = *winnersStack;
+        fprintf(f1, "\nWINNERS OF ROUND NO:%d\n", *round);
+
+        while (current != NULL)
+        {
+            if (current->teamName[strlen(current->teamName) - 1] == '\n')
+            {
+                (current->teamName[strlen(current->teamName) - 1]) = '\0';
+            }
+            fprintf(f1, "%-34s-  %.2f\n", current->teamName, current->totalPoints);
+            current = current->next;
+        }
+        freeStack(losersStack);
+
+        if (nrOfWinners(*winnersStack) == 8) // pastram ultimele 8 echipe intr o stiva
+        {
+            current = *winnersStack;
+            while (current != NULL)
+            {
+                push(lastEight, current);
+                current = current->next;
+            }
+        }
+        // mutam echipele din stiva in coada
+        team *temp;
+        while (*winnersStack != NULL)
+        {
+            temp = pop(winnersStack);
+            enQueue(q, temp->nrPlayers, temp->teamName, temp->players, temp->totalPoints);
+        }
+        freeStack(winnersStack);
+        (*round)++;
+        (*nrTeams) = (*nrTeams) / 2;
+    }
+}
+
 void task3(char *file, team **teamList, int *nrTeams)
 {
-    FILE *f1 = OpenWriteFile(file);
+    FILE *f1 = fopen(file, "at");
     if (f1 == NULL)
     {
         printf("The file cannot be opened!\n");
@@ -276,46 +389,12 @@ void task3(char *file, team **teamList, int *nrTeams)
         enQueue(q, current->nrPlayers, current->teamName, current->players, current->totalPoints);
         current = current->next;
     }
-    current = q->front;
-    while (current != NULL)
-    {
-        fprintf(f1, "%s\n", current->teamName);
-        current = current->next;
-    }
 
-    fprintf(f1, "\n--- ROUND NO:%d\n", round);
+    team *winnersStack = NULL;
+    team *losersStack = NULL;
+    team *lastEight = NULL;
 
-    matches(file, q);
+    matches(file, q, &winnersStack, &losersStack, &lastEight, &round, nrTeams);
 
-    // printTeamNameQueue(q); -> de test
     fclose(f1);
-}
-
-void matches(char *file, Queue *q)
-{
-    if (isEmpty(q))
-    {
-        return;
-    }
-    FILE *f1 = fopen(file, "at") ;
-    if (f1 == NULL)
-    {
-        printf("The file cannot be opened!\n");
-        return;
-    }
-
-   team *firstTeam, *secondTeam;
-
-    while (isEmpty(q) != 1)
-    {
-        firstTeam = deQueue(q);
-        secondTeam = deQueue(q);
-        if (firstTeam->teamName[strlen(firstTeam->teamName) - 1] == '\n')
-        {
-            firstTeam->teamName[strlen(firstTeam->teamName) - 1] = '\0';
-        }
-        fprintf(f1, "%-33s-%33s\n", firstTeam->teamName, secondTeam->teamName);
-    } 
-
-    
 }
