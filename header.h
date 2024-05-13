@@ -35,6 +35,7 @@ typedef struct node
 {
     team val;
     struct node *left, *right;
+    int height;
 }node ;
 
 FILE *OpenWriteFile(char *file);
@@ -85,6 +86,26 @@ void printBST(node *root, FILE *f1);
 
 void preorder(node *root);
 
+//=== AVL ============================================================================================
+
+int nodeHeight(node *root);
+
+int max(int a, int b);
+
+node *rightRotation(node *z);
+
+node *leftRotation(node *z);
+
+node *LRRotation(node *z);
+
+node *RLRotation(node *z);
+
+node *insertAVL(node *nod,  team *key);
+
+void createAVL(node **AVL, node *root);
+
+void printAVL(FILE *f1, node *root);
+
 //=== TASK 1 =========================================================================================
 
 void readTasks(char *file, int *tasks, int numOfTasks);
@@ -121,7 +142,10 @@ float averageScore2(team *teamlist);
 
 //=== TASK 4 ============================================================================================
 
-void task4(char *file, team *lastEight);
+void task4(char *file, team *lastEight, node *root, node **avl);
 
+//=== TASK 5 ============================================================================================
+
+void task5(char *file, node *avl);
 
 #endif

@@ -31,15 +31,18 @@ int main(int argc, char *argv[])
         task3(argv[3], &teamList, &lastEight, &nrTeams);
     }
 
+    node *bst = NULL, *avl = NULL ;
     if (tasks[3] == 1)
     {
-        task4(argv[3], lastEight);
+        task4(argv[3], lastEight, bst, &avl);
     }
 
-    /*if (tasks[4] == 1)
+    if (tasks[4] == 1)
     {
-        task5(argv[3], &teamList, &nrTeams);
-    } */
+        task5(argv[3], avl);
+    }
+
+    free(tasks); free(bst); free(avl); free(teamList);
 
     return 0;
 }

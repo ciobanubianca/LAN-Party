@@ -123,6 +123,7 @@ team *readTeams(char *file1, int *nrTeams)
         totalPoints = 0.0;
     }
 
+    free(team_name);
     fclose(f1);
 
     return *TeamList;
@@ -266,7 +267,7 @@ void task2(char *file, team **teamList, int *nrTeams)
 }
 //=== TASK 3 =====================================================================
 
-void trim(char *str) //elimina space uri, tab uri, newline uri
+void trim(char *str) // elimina space uri, tab uri, newline uri
 {
     int i = strlen(str) - 1;
     while (i >= 0 && isspace(str[i]))
@@ -400,25 +401,43 @@ void task3(char *file, team **teamList, team **lastEight, int *nrTeams)
 
 //=== TASK 4 =====================================================================
 
-void task4(char *file, team *lastEight)
+void task4(char *file, team *lastEight, node *root, node **avl)
 {
     FILE *f1 = fopen(file, "at");
-    if(f1 == NULL)
+    if (f1 == NULL)
     {
         printf("The file cannot be opened!\n");
         return;
     }
-    
-    node *root = NULL;
+
     team *current = lastEight;
     fprintf(f1, "\nTOP 8 TEAMS:\n");
-    while(current != NULL)
-    {  
+    while (current != NULL)
+    {
         root = insert(root, current);
         current = current->next;
     }
-    
     printBST(root, f1);
+
+    createAVL(avl, root);
+    free(lastEight);
+    fclose(f1);
+}
+
+//=== TASK 5 =====================================================================
+
+void task5(char *file, node *avl)
+{
+    FILE *f1 = fopen(file, "at");
+    if (f1 == NULL)
+    {
+        printf("The file cannot be opened!\n");
+        return;
+    }
+
+    fprintf(f1, "\nTHE LEVEL 2 TEAMS ARE:\n");
+
+    printAVL(f1, avl);
 
     fclose(f1);
 }
