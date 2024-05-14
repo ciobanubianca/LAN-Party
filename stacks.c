@@ -136,7 +136,7 @@ void printStack(char *file, team *stack)
 	team *current = stack;
 	while (current != NULL)
 	{
-		printf("%s-%.2f\n", current->teamName, averageScore(current));
+		printf("%s-%.2f\n", current->teamName, averageScore2(current));
 		current = current->next;
 	}
 }

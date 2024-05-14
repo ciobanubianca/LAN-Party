@@ -145,7 +145,7 @@ void deleteTeamAverg(team **teamlist, float medie)
 
 	team *aux = *teamlist;
 
-	if ((averageScore(aux)) == medie)
+	if ((averageScore2(aux)) == medie)
 	{
 		*teamlist = (*teamlist)->next;
 		free(aux);
@@ -155,7 +155,7 @@ void deleteTeamAverg(team **teamlist, float medie)
 	team *prev = *teamlist;
 	while (aux != NULL)
 	{
-		if ((averageScore(aux)) != medie)
+		if ((averageScore2(aux)) != medie)
 		{
 			prev = aux;
 			aux = aux->next;

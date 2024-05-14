@@ -153,18 +153,7 @@ void task1(char *file, team *teamList, int nrTeams)
 
 //=== TASK 2 ===========================================================
 
-float averageScore(team *teamlist) // media punctajelor pentru o echipa
-{
-    float average = 0.0;
-
-    for (int i = 0; i < teamlist->nrPlayers; i++)
-    {
-        average += teamlist->players[i].points;
-    }
-    return (float)(average / teamlist->nrPlayers);
-}
-
-float averageScore2(team *teamlist)
+float averageScore2(team *teamlist) // media punctajelor pentru o echipa
 {
     float average = (float)(teamlist->totalPoints / teamlist->nrPlayers);
 
@@ -182,7 +171,7 @@ float *averagescoresV(team *teamList, int *nrTeams) // vector cu mediile echipel
 
     for (int i = 0; i < *nrTeams; i++)
     {
-        v[i] = averageScore(teamList);
+        v[i] = averageScore2(teamList);
         teamList = teamList->next;
     }
 

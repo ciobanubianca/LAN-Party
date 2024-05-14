@@ -116,7 +116,7 @@ void task1(char *file, team *teamList, int nrTeams);
 
 //=== TASK 2 ==========================================================================================
 
-float averageScore(team *teamlist);
+float averageScore2(team *teamlist);
 
 float *averagescoresV(team *teamList, int *nrTeams);
 
